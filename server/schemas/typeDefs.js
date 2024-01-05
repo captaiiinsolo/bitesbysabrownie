@@ -27,6 +27,7 @@ const typeDefs = gql`
         state: String!
         zip: String!
         orders: [Order]
+        reviews: [Review]
     }
 
     type Order {
