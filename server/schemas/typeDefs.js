@@ -1,18 +1,31 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
+
+    type Admin {
+        _id: ID!
+        firstName: String!
+        lastName: String!
+        email: String!
+        password: String!
+        customers: [Customer]
+        orders: [Order]
+        products: [Product]
+        reviews: [Review]
+
+    }
   
     type Customer {
         _id: ID!
-        firstName: String
-        lastName: String
-        email: String
-        password: String
+        firstName: String!
+        lastName: String!
+        email: String!
+        password: String!
         phone: String
-        address: String
-        city: String
-        state: String
-        zip: String
+        address: String!
+        city: String!
+        state: String!
+        zip: String!
         orders: [Order]
     }
 
@@ -23,6 +36,8 @@ const typeDefs = gql`
         quantity: Int
         price: Float
         orderDate: String
+        pickUp: Boolean!
+        pickUpDate: String
         deliveryDate: String
         deliveryAddress: String
         deliveryCity: String
@@ -56,6 +71,7 @@ const typeDefs = gql`
     enum OrderStatus {
         PENDING
         SHIPPED
+        READY_FOR_PICKUP
         DELIVERED
         PICKED_UP
         CANCELLED
@@ -71,6 +87,24 @@ const typeDefs = gql`
         COOKIE_DOUGH_BITES
     }
 
+    input CustomerSearchInput {
+        firstName: String
+        lastName: String
+        email: String
+        phone: String
+        address: String
+        city: String
+        state: String
+        zip: String
+    }
+
+    input ProductSearchInput {
+        name: String
+        stock: StockStatus
+        category: Category
+
+    }
+
     type Query {
         getCustomerById(id: ID!): Customer
         getAllCustomers: [Customer]
@@ -83,8 +117,8 @@ const typeDefs = gql`
         getAllProducts: [Product]
         getProductsByPrice(min: Float, max: Float): [Product]
         getProductsByStockStatus(status: StockStatus!): [Product]
-        searchProductsByName(name: String!): [Product]
-        searchProductsByCategory(category: String!): [Product]
+        searchProducts(input: ProductSearchInput!): [Product]
+        searchCustomers(input: CustomerSearchInput!): [Customer]
 
     }
 `
