@@ -32,11 +32,11 @@ const typeDefs = gql`
 
     type Order {
         _id: ID!
-        products: [Product]
-        customer: Customer
-        quantity: Int
-        price: Float
-        orderDate: String
+        products: [Product!]
+        customer: Customer!
+        quantity: Int!
+        price: Float!
+        orderDate: String!
         pickUp: Boolean!
         pickUpDate: String
         deliveryDate: String
@@ -44,7 +44,7 @@ const typeDefs = gql`
         deliveryCity: String
         deliveryState: String
         deliveryZip: String
-        status: OrderStatus
+        status: OrderStatus!
         notes: String
     }
 
