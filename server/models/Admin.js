@@ -65,10 +65,10 @@ adminSchema.pre('save', async function (next) {
     }
 });
 
-adminSChema.virtual('fullName').get(function () {
+adminSchema.virtual('fullName').get(function () {
     return `${this.firstName} ${this.lastName}`;
 });
 
-const Admin = model('Admin', adminSChema);
+const Admin = model('Admin', adminSchema);
 
 module.exports = Admin;

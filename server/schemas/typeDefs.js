@@ -73,8 +73,11 @@ const typeDefs = gql`
 
     type AuthPayload {
         token: String
-        user: Admin or Customer (depending on userType)
+        user: AdminOrCustomer
     }
+    
+    union AdminOrCustomer = Admin | Customer
+    
 
     enum OrderStatus {
         PENDING
@@ -111,6 +114,13 @@ const typeDefs = gql`
         stock: StockStatus
         category: Category
 
+    }
+
+    input AdminInput {
+        firstName: String!
+        lastName: String!
+        email: String!
+        password: String!
     }
 
     input CustomerInput {
@@ -159,9 +169,11 @@ const typeDefs = gql`
     }
 
     type Query {
+        getAdminById(id: ID!): Admin
+        getAllAdmins: [Admin]
         getCustomerById(id: ID!): Customer
         getAllCustomers: [Customer]
-        getOrdersById(id: ID!): Order
+        getOrderById(id: ID!): Order
         getOrdersByCustomer(id: ID!): [Order]
         getOrdersByOrderStatus(status: OrderStatus!): [Order]
         getAllOrders: [Order]
@@ -170,12 +182,18 @@ const typeDefs = gql`
         getAllProducts: [Product]
         getProductsByPrice(min: Float, max: Float): [Product]
         getProductsByStockStatus(status: StockStatus!): [Product]
+        getReviewById(id: ID!): Review
+        getAllReviews: [Review]
         searchProducts(input: ProductSearchInput!): [Product]
         searchCustomers(input: CustomerSearchInput!): [Customer]
 
     }
 
     type Mutation {
+        login(email: String!, password: String!): AuthPayload
+        createAdmin(input: AdminInput!): Admin
+        updateAdmin(id: ID!, input: AdminInput!): Admin
+        deleteAdmin(id: ID!): Admin
         createCustomer(input: CustomerInput!): Customer
         updateCustomer(id: ID!, input: CustomerInput!): Customer
         deleteCustomer(id: ID!): Customer
