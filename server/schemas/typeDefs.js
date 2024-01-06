@@ -4,6 +4,7 @@ const typeDefs = gql`
 
     type Admin {
         _id: ID!
+        userType: String!
         firstName: String!
         lastName: String!
         email: String!
@@ -17,6 +18,7 @@ const typeDefs = gql`
   
     type Customer {
         _id: ID!
+        userType: String!
         firstName: String!
         lastName: String!
         email: String!
@@ -62,11 +64,16 @@ const typeDefs = gql`
 
     type Review {
         _id: ID!
-        author: String
+        author: String!
         content: String
-        rating: Int
-        date: String
-        product: Product
+        rating: Int!
+        date: String!
+        product: Product!
+    }
+
+    type AuthPayload {
+        token: String
+        user: Admin or Customer (depending on userType)
     }
 
     enum OrderStatus {
