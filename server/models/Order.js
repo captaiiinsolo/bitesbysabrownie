@@ -12,11 +12,11 @@ const orderSchema = new Schema({
     ref: "Customer" 
   },
   quantity: {
-    type: Number,
+    type: String,
     required: true
   },
   price: {
-    type: Number,
+    type: String,
     required: true
   },
   orderDate: {
