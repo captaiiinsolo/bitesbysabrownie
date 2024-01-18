@@ -41,6 +41,8 @@ const productSchema = new Schema({
     }
 });
 
+productSchema.index({ name: 'text', description: 'text', stock: 'text' });
+
 const Product = model('Product', productSchema);
 
 module.exports = Product;

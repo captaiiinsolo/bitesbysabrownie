@@ -23,6 +23,9 @@ const resolvers = {
   
       getReviewById: async (_, { id }) => await Review.findById(id),
       getAllReviews: async () => await Review.find(),
+
+      searchProducts: async (_, { input }) => await Product.find({ $text: { $search : input.name } }),
+      searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input } }),
     },
 
     Mutation: {

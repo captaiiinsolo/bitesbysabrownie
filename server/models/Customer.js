@@ -84,6 +84,8 @@ customerSchema.virtual('fullName').get(function () {
     return `${this.firstName} ${this.lastName}`;
 });
 
+customerSchema.index({ firstName: 'text', lastName: 'text', email: 'text', phone: 'text', address: 'text', city: 'text', state: 'text', zip: 'text'});
+
 const Customer = model('Customer', customerSchema);
 
 module.exports = Customer; 
