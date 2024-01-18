@@ -25,7 +25,7 @@ const resolvers = {
       getAllReviews: async () => await Review.find(),
 
       searchProducts: async (_, { input }) => await Product.find({ $text: { $search : input.name } }),
-      searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input } }),
+      searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input.firstName, $search : input.lastName } }),
     },
 
     Mutation: {
@@ -57,7 +57,18 @@ const resolvers = {
       deleteCustomer: async (_, { id }) => await Customer.findByIdAndDelete(id),
   
       // Order mutations
-      createOrder: async (_, { input }) => await Order.create(input),
+      createOrder: async (_, { input }) => {
+        const createOrder = await Order.create(input);
+        const customerID = input.customer;
+        
+        await Customer.findByIdAndUpdate(
+          customerID,
+          { $push: { orders: createOrder._id } },
+          { new: true }
+        );
+
+        return createOrder;
+      },
       updateOrder: async (_, { id, input }) => await Order.findByIdAndUpdate(id, input, { new: true }),
       deleteOrder: async (_, { id }) => await Order.findByIdAndDelete(id),
   
