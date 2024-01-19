@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const dayjs = require('dayjs');
 
 const orderSchema = new Schema({
   products: [
@@ -22,17 +23,20 @@ const orderSchema = new Schema({
   orderDate: {
     type: Date,
     default: Date.now,
-    required: true
+    required: true,
+    get: (value) => (value ? dayjs(value).format('MM/DD/YYYY') : null)
   },
   pickUp: {
     type: Boolean,
     required: true
   },
   pickUpDate: {
-    type: Date
+    type: Date,
+    get: (value) => (value ? dayjs(value).format('MM/DD/YYYY') : null)
   },
   deliveryDate: {
-    type: Date
+    type: Date,
+    get: (value) => (value ? dayjs(value).format('MM/DD/YYYY') : null)
   },
   deliveryAddress: {
     type: String

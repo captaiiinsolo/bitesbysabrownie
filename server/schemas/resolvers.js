@@ -78,7 +78,25 @@ const resolvers = {
       deleteProduct: async (_, { id }) => await Product.findByIdAndDelete(id),
   
       // Review mutations
-      createReview: async (_, { input }) => await Review.create(input),
+      createReview: async (_, { input }) => {
+        const createReview = await Review.create(input);
+        const productID = input.product;
+        const customerID = input.customer;
+        
+        await Product.findByIdAndUpdate(
+          productID,
+          { $push: { reviews: createReview._id } },
+          { new: true }
+        );
+
+        await Customer.findByIdAndUpdate(
+          customerID,
+          { $push: { reviews: createReview._id } },
+          { new: true }
+        );
+
+        return createReview;
+      },
       updateReview: async (_, { id, input }) => await Review.findByIdAndUpdate(id, input, { new: true }),
       deleteReview: async (_, { id }) => await Review.findByIdAndDelete(id),
     },

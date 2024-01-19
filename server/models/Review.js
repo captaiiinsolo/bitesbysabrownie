@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const dayjs = require('dayjs');
 
 const reviewSchema = new Schema({
     author: {
@@ -17,7 +18,8 @@ const reviewSchema = new Schema({
     date: {
         type: Date,
         default: Date.now,
-        required: true
+        required: true,
+        get: (value) => (value ? dayjs(value).format('MM/DD/YYYY') : null)
     },
     product: {
         type: Schema.Types.ObjectId,
