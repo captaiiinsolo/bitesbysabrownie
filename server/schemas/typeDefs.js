@@ -64,10 +64,10 @@ const typeDefs = gql`
 
     type Review {
         _id: ID!
-        author: String!
+        customer: Customer!
         content: String
         rating: Int!
-        date: String!
+        date: String
         product: Product!
     }
 
@@ -161,10 +161,10 @@ const typeDefs = gql`
     }
 
     input ReviewInput {
-        author: String!
+        customer: ID
         content: String!
         rating: Int!
-        date: String!
+        date: String
         product: ID!
     }
 

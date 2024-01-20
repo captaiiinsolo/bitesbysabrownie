@@ -2,18 +2,19 @@ const { Schema, model } = require('mongoose');
 const dayjs = require('dayjs');
 
 const reviewSchema = new Schema({
-    author: {
-        type: String,
-        required: true,
-        trim: true
-    },
+    customer: { 
+        type: Schema.Types.ObjectId, 
+        ref: "Customer"
+      },
     content: {
         type: String,
         trim: true
     },
     rating: {
         type: Number,
-        required: true
+        required: true,
+        min: 1,
+        max: 5
     },
     date: {
         type: Date,

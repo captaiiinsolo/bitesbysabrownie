@@ -22,10 +22,11 @@ const resolvers = {
       getAllProducts: async () => await Product.find(),
   
       getReviewById: async (_, { id }) => await Review.findById(id),
-      getAllReviews: async () => await Review.find(),
+      getAllReviews: async () => await Review.find().populate('customer'),
 
       searchProducts: async (_, { input }) => await Product.find({ $text: { $search : input.name } }),
-      searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input.firstName, $search : input.lastName, $search : input.email, $search : input.phone, $search : input.address, $search : input.city, $search : input.city, $search : input.state, $search : input.zip } }),
+      searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input.firstName } }),
+      
     },
 
     Mutation: {
