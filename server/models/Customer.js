@@ -33,20 +33,30 @@ const customerSchema = new Schema({
         required: true
     },
     address: {
+       street1: {
         type: String,
         required: true
-    },
-    city: {
+       },
+
+       street2: {
+        type: String,
+        required: false
+       },
+
+       city: {
         type: String,
         required: true
-    },
-    state: {
+       },
+
+       state: {
         type: String,
         required: true
-    },
-    zip: {
+       },
+
+       zip: {
         type: String,
         required: true
+       },
     },
     orders: [{
         type: Schema.Types.ObjectId,
@@ -56,8 +66,6 @@ const customerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }]
-
-
 },
 
     {
@@ -84,7 +92,7 @@ customerSchema.virtual('fullName').get(function () {
     return `${this.firstName} ${this.lastName}`;
 });
 
-customerSchema.index({ firstName: 'text', lastName: 'text', email: 'text', phone: 'text', city: 'text', state: 'text', zip: 'text' });
+// customerSchema.index({ firstName: 'text', lastName: 'text', email: 'text', phone: 'text', city: 'text', state: 'text', zip: 'text' });
 
 const Customer = model('Customer', customerSchema);
 

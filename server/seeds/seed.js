@@ -31,8 +31,8 @@ connection.once("open", async () => {
   await Admin.deleteMany({});
   await Customer.deleteMany({});
   await Product.deleteMany({});
-  // await Order.deleteMany({});
-  // await Review.deleteMany({});
+  await Order.deleteMany({});
+  await Review.deleteMany({});
 
   // Create Admins
   const admins = [];
@@ -56,10 +56,13 @@ connection.once("open", async () => {
       email: faker.internet.email(),
       password: faker.internet.password(),
       phone: faker.phone.number(),
-      address: faker.location.streetAddress(),
-      city: faker.location.city(),
-      state: faker.location.state({ abbr: true }),
-      zip: faker.location.zipCode(),
+      address: {
+        street1: faker.location.streetAddress(),
+        street2: faker.location.secondaryAddress(),
+        city: faker.location.city(),
+        state: faker.location.state({ abbr: true }),
+        zip: faker.location.zipCode(),
+      },
    });
  }
 

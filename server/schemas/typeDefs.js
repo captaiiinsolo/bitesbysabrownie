@@ -24,12 +24,17 @@ const typeDefs = gql`
         email: String!
         password: String!
         phone: String!
-        address: String!
+        address: Address!
+        orders: [Order]
+        reviews: [Review]
+    }
+
+    type Address {
+        street1: String!
+        street2: String
         city: String!
         state: String!
         zip: String!
-        orders: [Order]
-        reviews: [Review]
     }
 
     type Order {
@@ -42,12 +47,17 @@ const typeDefs = gql`
         pickUp: Boolean!
         pickUpDate: String
         deliveryDate: String
-        deliveryAddress: String
-        deliveryCity: String
-        deliveryState: String
-        deliveryZip: String
+        deliveryAddress: DeliveryAddress!
         status: OrderStatus!
         notes: String
+    }
+
+    type DeliveryAddress {
+        deliveryStreet1: String!
+        deliveryStreet2: String
+        deliveryCity: String!
+        deliveryState: String!
+        deliveryZip: String!
     }
 
     type Product {
@@ -123,16 +133,29 @@ const typeDefs = gql`
         password: String!
     }
 
+    input AddressInput {
+        street1: String!
+        street2: String
+        city: String!
+        state: String!
+        zip: String!
+    }
+
     input CustomerInput {
         firstName: String!
         lastName: String!
         email: String!
         password: String!
         phone: String
-        address: String!
-        city: String!
-        state: String!
-        zip: String!
+        address: AddressInput!
+    }
+
+    input DeliveryAddressInput {
+        deliveryStreet1: String!
+        deliveryStreet2: String
+        deliveryCity: String!
+        deliveryState: String!
+        deliveryZip: String!
     }
 
     input OrderInput {
@@ -144,10 +167,7 @@ const typeDefs = gql`
         pickUp: Boolean!
         pickUpDate: String
         deliveryDate: String
-        deliveryAddress: String
-        deliveryCity: String
-        deliveryState: String
-        deliveryZip: String
+        deliveryAddress: DeliveryAddressInput!
         status: OrderStatus
         notes: String
     }

@@ -39,16 +39,30 @@ const orderSchema = new Schema({
     get: (value) => (value ? dayjs(value).format('MM/DD/YYYY') : null)
   },
   deliveryAddress: {
-    type: String
-  },
-  deliveryCity: {
-    type: String
-  },
-  deliveryState: {
-    type: String
-  },
-  deliveryZip: {
-    type: String
+    deliveryStreet1: {
+      type: String,
+      required: true
+    },
+
+    deliveryStreet2: {
+      type: String,
+      required: false
+    },
+
+    deliveryCity: {
+      type: String,
+      required: true
+    },
+
+    deliveryState: {
+      type: String,
+      required: true
+    },
+
+    deliveryZip: {
+      type: String,
+      required: true
+    },
   },
   status: {
     type: String,

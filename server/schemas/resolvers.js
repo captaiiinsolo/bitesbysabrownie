@@ -15,7 +15,6 @@ const resolvers = {
       getAllCustomers: async () => await Customer.find(),
   
       getOrderById: async (_, { id }) => await Order.findById(id),
-      getOrdersByCustomer: async (_, { id }) => await Order.find({ customer: id }),
       getAllOrders: async () => await Order.find(),
   
       getProductById: async (_, { id }) => await Product.findById(id),
