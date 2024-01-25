@@ -92,7 +92,12 @@ customerSchema.virtual('fullName').get(function () {
     return `${this.firstName} ${this.lastName}`;
 });
 
-// customerSchema.index({ firstName: 'text', lastName: 'text', email: 'text', phone: 'text', city: 'text', state: 'text', zip: 'text' });
+// Compare passwords to see if entered password is correct
+customerSchema.methods.isCorrectPassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+};
+
+customerSchema.index({ firstName: 'text', lastName: 'text', email: 'text', phone: 'text' });
 
 const Customer = model('Customer', customerSchema);
 

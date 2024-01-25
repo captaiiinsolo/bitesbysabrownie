@@ -24,8 +24,18 @@ const resolvers = {
       getAllReviews: async () => await Review.find().populate('customer'),
 
       searchProducts: async (_, { input }) => await Product.find({ $text: { $search : input.name } }),
-      searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input.firstName } }),
+      // searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input.query } }),
+
+      searchCustomers: async (_, { input }) => {      
+        // If the input contains a query, perform a regular query
+        if (input.query) {
+          const customer = await Customer.findOne({ email: input.query });
+          return customer ? [customer] : [];
+        }
       
+        // If no query is provided, return all customers
+        return await Customer.find();
+      }
     },
 
     Mutation: {

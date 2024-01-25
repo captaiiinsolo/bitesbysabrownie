@@ -69,6 +69,10 @@ adminSchema.virtual('fullName').get(function () {
     return `${this.firstName} ${this.lastName}`;
 });
 
+adminSchema.methods.isCorrectPassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
+}
+
 const Admin = model('Admin', adminSchema);
 
 module.exports = Admin;
