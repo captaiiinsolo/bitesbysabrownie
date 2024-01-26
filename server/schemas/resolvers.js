@@ -24,18 +24,28 @@ const resolvers = {
       getAllReviews: async () => await Review.find().populate('customer'),
 
       searchProducts: async (_, { input }) => await Product.find({ $text: { $search : input.name } }),
-      // searchCustomers: async (_, { input }) => await Customer.find({ $text: { $search : input.query } }),
+      searchCustomers: async (_, { input }) => {
 
-      searchCustomers: async (_, { input }) => {      
-        // If the input contains a query, perform a regular query
         if (input.query) {
-          const customer = await Customer.findOne({ email: input.query });
+          const regex = new RegExp(input.query, 'i'); // Create a case-insensitive regex
+          const customer = await Customer.findOne({
+            $or: [
+              { firstName: regex },
+              { lastName: regex },
+              { email: regex },
+              { phone: regex },
+              { 'address.city': regex },
+              { 'address.state': regex },
+              { 'address.zip': regex },
+            ]
+          });
           return customer ? [customer] : [];
         }
       
         // If no query is provided, return all customers
         return await Customer.find();
       }
+      
     },
 
     Mutation: {
