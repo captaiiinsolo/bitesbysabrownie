@@ -28,7 +28,7 @@ const resolvers = {
 
         if (input.query) {
           const regex = new RegExp(input.query, 'i'); // Create a case-insensitive regex
-          const customer = await Customer.findOne({
+          const customer = await Customer.find({
             $or: [
               { firstName: regex },
               { lastName: regex },
@@ -39,7 +39,7 @@ const resolvers = {
               { 'address.zip': regex },
             ]
           });
-          return customer ? [customer] : [];
+          return customer.length > 0 ? customer : [];
         }
       
         // If no query is provided, return all customers
