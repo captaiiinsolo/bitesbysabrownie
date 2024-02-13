@@ -19,6 +19,7 @@ const resolvers = {
   
       getProductById: async (_, { id }) => await Product.findById(id),
       getAllProducts: async () => await Product.find(),
+      getProductsByStockStatus: async (_, { status }) => await Product.find({ stock: status }),
   
       getReviewById: async (_, { id }) => await Review.findById(id),
       getAllReviews: async () => await Review.find().populate('customer'),
@@ -47,7 +48,7 @@ const resolvers = {
       }
       
     },
-
+  
     Mutation: {
         login: async (_, { email, password }) => {
             const user = await User.findOne({ email });
@@ -103,11 +104,13 @@ const resolvers = {
         const productID = input.product;
         const customerID = input.customer;
         
-        await Product.findByIdAndUpdate(
+        const product = await Product.findByIdAndUpdate(
           productID,
           { $push: { reviews: createReview._id } },
           { new: true }
         );
+
+        await product.calculateAvgRating();
 
         await Customer.findByIdAndUpdate(
           customerID,
@@ -117,35 +120,59 @@ const resolvers = {
 
         return createReview;
       },
-      updateReview: async (_, { id, input }) => await Review.findByIdAndUpdate(id, input, { new: true }),
-      deleteReview: async (_, { id }) => await Review.findByIdAndDelete(id),
+      updateReview: async (_, { id, input }) => {
+        const review = await Review.findByIdAndUpdate(id, input, { new: true });
+
+        const product = await Product.findById(review.product);
+        await product.calculateAvgRating();
+
+        return review;
+      },
+      deleteReview: async (_, { id }) => {
+        const review = await Review.findById(id);
+        const product = await Product.findById(review.product);
+
+        await review.remove();
+        await product.calculateAvgRating();
+
+        return review;
+      },
+  },
+
+  Admin: {
+    // Resolve nested relationships for Admin
+    customers: async (admin) => await Customer.find({ _id: { $in: admin.customers } }),
+    orders: async (admin) => await Order.find({ _id: { $in: admin.orders } }),
+    products: async (admin) => await Product.find({ _id: { $in: admin.products } }),
+    reviews: async (admin) => await Review.find({ _id: { $in: admin.reviews } }),
+  },
+  Customer: {
+    // Resolve nested relationships for Customer
+    orders: async (customer) => await Order.find({ _id: { $in: customer.orders } }),
+    reviews: async (customer) => await Review.find({ _id: { $in: customer.reviews } }),
+  },
+  Order: {
+    // Resolve nested relationships for Order
+    products: async (order) => await Product.find({ _id: { $in: order.products } }),
+    customer: async (order) => await Customer.findById(order.customer),
+  },
+  Product: {
+    // Resolve nested relationships for Product
+    reviews: async (product) => await Review.find({ _id: { $in: product.reviews } }),
+    avgRating: async (product) => {
+      const reviews = await Review.find({ _id: { $in: product.reviews } });
+      if (reviews.length === 0) {
+        return 0;
+      }
+      const sum = reviews.reduce((a, b) => a + b.rating, 0);
+      return sum / reviews.length;
     },
-    
-    Admin: {
-      // Resolve nested relationships for Admin
-      customers: async (admin) => await Customer.find({ _id: { $in: admin.customers } }),
-      orders: async (admin) => await Order.find({ _id: { $in: admin.orders } }),
-      products: async (admin) => await Product.find({ _id: { $in: admin.products } }),
-      reviews: async (admin) => await Review.find({ _id: { $in: admin.reviews } }),
-    },
-    Customer: {
-      // Resolve nested relationships for Customer
-      orders: async (customer) => await Order.find({ _id: { $in: customer.orders } }),
-      reviews: async (customer) => await Review.find({ _id: { $in: customer.reviews } }),
-    },
-    Order: {
-      // Resolve nested relationships for Order
-      products: async (order) => await Product.find({ _id: { $in: order.products } }),
-      customer: async (order) => await Customer.findById(order.customer),
-    },
-    Product: {
-      // Resolve nested relationships for Product
-      reviews: async (product) => await Review.find({ _id: { $in: product.reviews } }),
-    },
-    Review: {
-      // Resolve nested relationships for Review
-      product: async (review) => await Product.findById(review.product),
-    },
-  };
+  },
+  Review: {
+    // Resolve nested relationships for Review
+    product: async (review) => await Product.findById(review.product),
+  },
+
+};
   
   module.exports = resolvers;

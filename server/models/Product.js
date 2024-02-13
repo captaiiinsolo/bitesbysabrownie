@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const Review = require('./Review');
 
 const productSchema = new Schema({
     name: {
@@ -25,7 +26,8 @@ const productSchema = new Schema({
         }
     ],
     avgRating: {
-        type: Number
+        type: Number,
+        default: 0
     },
     category: {
         type: String,
@@ -40,6 +42,16 @@ const productSchema = new Schema({
         getters: true
     }
 });
+
+productSchema.methods,calculateAvgRating = async function() {
+    const reviews = await Review.find({ product: this._id });
+    const avgRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+
+    this.avgRating = avgRating;
+    await this.save();
+
+    return avgRating;
+};
 
 productSchema.index({ name: 'text' });
 const Product = model('Product', productSchema);
